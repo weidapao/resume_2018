@@ -4,9 +4,55 @@
     <title>我的个人简历</title>
     <link rel="stylesheet" href="./a.css">
     <script src="//at.alicdn.com/t/font_451045_32zbfqegtq3t0529.js"></script>
+    <style>
+      .loading{
+        width:200px;
+        height:200px;
+        position:relative;
+      }
+      .loading::before,.loading::after{
+        content: '';
+        border-radius:50%;
+        background:black;
+        width: 0px;
+        height: 0px;
+        right:0;
+        left:0;
+        bottom:0;
+        top:0;
+        margin:auto;
+        position:absolute;
+        animation:slidein 1.5s linear infinite;
+      }
+      .loading::after{
+        animation-delay: 0.75s;
+      }
+      @keyframes slidein {
+        from { width:0px;height:0px;opacity: 1; }
+        to   { width:100px;height:100px;opacity: 0; }
+      }
+      .loading-bar{
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #888;
+        z-index: 1;
+        justify-content: center;
+        align-items: center;
+      }
+      .loading-bar.active{
+        display: flex;
+      }   
+    </style>
   </head>
   <body>
-    <div class="topNavBar">
+    <div id="loadBar" class="loading-bar active">
+        <div class="loading"></div>
+    </div>
+    <div id="topNavBar" class="topNavBar">
       <div class="topNavBar-inner clearfix">
         <a class="logo" href="#" alt="logo" style="float: left; ">
           <span class="rs">RS</span>
@@ -14,13 +60,20 @@
         </a>
         <nav style="float: right;">
           <ul class="clearfix">
-            <li><a href="#">关于</a></li>
-            <li><a href="#">技能</a></li>
-            <li><a href="#">作品</a></li>
-            <li><a href="#">博客</a></li>
-            <li><a href="#">日历</a></li>
-            <li><a href="#">联系方式</a></li>
-            <li><a href="#">其他</a></li>
+            <li><a href="#about">关于</a></li>
+            <li><a href="#skills">技能</a></li>
+            <li>
+              <a href="#articles">作品</a>
+              <ul class="li-combox">
+                <li>作品1</li>
+                <li>作品2</li>
+                <li>作品3</li>
+              </ul>
+            </li>
+            <li><a href="#blog">博客</a></li>
+            <li><a href="#date">日历</a></li>
+            <li><a href="#tel">联系方式</a></li>
+            <li><a href="#others">其他</a></li>
           </ul>
         </nav>
       </div>
@@ -28,7 +81,7 @@
     <div class="banner">
       <div class="mask"></div>
     </div>
-    <main>
+    <main id="about">
       <div class="userCard">
         <div class="pictureAndText clearfix">
           <div class="picture">
@@ -39,7 +92,7 @@
               Hello
               <span class="triangle"></span>
             </span>
-            <h1>大宝</h1>
+            <h1>韦中熠</h1>
             <p>前端开发工程师</p>
             <hr>
             <dl>
@@ -82,7 +135,7 @@
       </p>
 
     </main>
-    <section class="skills">
+    <section id="skills" class="skills">
         <h2>技能</h2>
         <ol class="clearfix">
           <li>
@@ -135,7 +188,7 @@
           </li>
         </ol>
       </section>
-    <section class="portfolio">
+    <section id="articles" class="portfolio">
       <h2>作品集</h2>
       <nav>
         <ol class="clearfix">
@@ -179,5 +232,42 @@
       </div>
 
     </section>
+    <script>
+      // console.log(loadBar.classList);
+      setTimeout(function(){loadBar.classList.remove('active')},1000);
+
+      window.onscroll =function(e){
+        if(window.scrollY > 0){
+          topNavBar.classList.add('sticky')
+        }else{
+          topNavBar.classList.remove('sticky')
+        }
+      }
+
+      let liTags=document.querySelectorAll('.topNavBar>.topNavBar-inner>nav>ul>li');
+      for (let index = 0; index < liTags.length; index++) {
+        var element = liTags[index];
+        element.onmouseenter=function(e){
+          // console.log(e);
+          e.currentTarget.classList.add('active');
+        }
+        element.onmouseleave=function(e){
+          // console.log(e);
+          e.currentTarget.classList.remove('active');
+        }
+      }
+
+      let aTags=document.querySelectorAll('.topNavBar>.topNavBar-inner>nav>ul>li>a');
+      for (let j = 0; j < aTags.length; j++) {
+        var element = aTags[j];
+        element.onclick=function(e){
+          e.preventDefault();
+          let a = e.currentTarget
+          let href = a.getAttribute('href')
+          var xxx=document.querySelector(href).offsetTop;
+          window.scrollTo(0, xxx - 80)
+        }
+      }
+    </script>
   </body>
 </html>
