@@ -3,6 +3,7 @@
   <head>
     <title>我的个人简历</title>
     <link rel="stylesheet" href="./a.css">
+    <link rel="stylesheet" href="swiper.min.css">
     <script src="//at.alicdn.com/t/font_451045_32zbfqegtq3t0529.js"></script>
     <style>
       .loading{
@@ -46,12 +47,16 @@
       .loading-bar.active{
         display: flex;
       }   
+      .swiper-container {
+          width: 600px;
+          height: 300px;
+      }
     </style>
   </head>
   <body>
-    <div id="loadBar" class="loading-bar active">
+    <!-- <div id="loadBar" class="loading-bar active">
         <div class="loading"></div>
-    </div>
+    </div> -->
     <div id="topNavBar" class="topNavBar">
       <div class="topNavBar-inner clearfix">
         <a class="logo" href="#" alt="logo" style="float: left; ">
@@ -71,6 +76,7 @@
               </ul>
             </li>
             <li><a href="#blog">博客</a></li>
+            <li><a href="#messageBox">留言板</a></li>
             <li><a href="#date">日历</a></li>
             <li><a href="#tel">联系方式</a></li>
             <li><a href="#others">其他</a></li>
@@ -81,7 +87,7 @@
     <div class="banner">
       <div class="mask"></div>
     </div>
-    <main id="about">
+    <main data-part id="about">
       <div class="userCard">
         <div class="pictureAndText clearfix">
           <div class="picture">
@@ -135,7 +141,7 @@
       </p>
 
     </main>
-    <section id="skills" class="skills">
+    <section data-part id="skills" class="skills">
         <h2>技能</h2>
         <ol class="clearfix">
           <li>
@@ -188,53 +194,144 @@
           </li>
         </ol>
       </section>
-    <section id="articles" class="portfolio">
+    <section data-part id="articles" class="portfolio">
       <h2>作品集</h2>
-      <nav>
-        <ol class="clearfix">
-          <li id="portfolio1">所有</li>
-          <li id="portfolio2">框架</li>
-          <li id="portfolio3">原生JS&amp;CSS</li>
-        </ol>
-        <div id="portfolioBar" class="bar state-1">
-            <div class="bar-inner"></div>
+      <!-- 这就是 view , 用户看得见的东西-->
+      <!-- Slider main container -->
+      <div id="mySlides">
+        <div class="swiper-container">
+          <!-- Additional required wrapper -->
+          <div class="swiper-wrapper">
+            <!-- Slides -->
+            <img src="./images/nav-page.jpg" class="swiper-slide">
+            <img src="./images/canvas.jpg" class="swiper-slide">
+            <img src="./images/apple-style-slides.jpg" class="swiper-slide">
+          </div>
+          <!-- If we need pagination -->
+          <div class="swiper-pagination"></div>
+  
+          <!-- If we need navigation buttons -->
         </div>
-      </nav>
-      <script>
-        portfolio1.onclick= function(){
-          portfolioBar.className = 'bar state-1'
-        }
-        portfolio2.onclick= function(){
-          portfolioBar.className = 'bar state-2'
-        }
-        portfolio3.onclick= function(){
-          portfolioBar.className = 'bar state-3'
-        }
-      </script>
-    
-    
-      <div class="works" style="height: 597px;">
-        <div class="big" style="top: 0; left: 0;">
-          <img src="./images/1.jpg" alt="作品1">
-        </div>
-        <div class="small" style="top: 0; left: 645px;">
-          <img src="./images/2.jpg" alt="作品2">
-        </div>
-        <div class="small" style="top: 312px; left: 645px;">
-          <img src="./images/3.jpg" alt="作品3">
-        </div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
       </div>
+    
+    
+      
 
       <div class="jobs">
         <div class="big"></div>
         <div class="small"></div>
         <div class="small"></div>
       </div>
-
     </section>
+
+    <section data-part id="messageBox" class="message">
+      <h2>留言板</h2>
+      <div id="messageBar">
+        <div class="message-container">
+          <ol>
+          </ol>
+        </div>
+      </div>
+      <form id="postMessageForm" style="width: 700px; margin: 50px auto;">
+        <label for="">姓名</label>
+        <input type="text" name="name">
+        <label for="">内容</label>
+        <input type="text" name="content">
+        <input type="submit" value="提交">
+      </form>
+    </section>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    
+
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/16.3.5/Tween.min.js"></script>
+    <script src="swiper.min.js"></script>
+    <script src="//cdn1.lncld.net/static/js/3.6.0/av-min.js"></script>
     <script>
-      // console.log(loadBar.classList);
-      setTimeout(function(){loadBar.classList.remove('active')},1000);
+      var APP_ID = 'ntPd2VVYTG4fbJ110XHPv2k9-gzGzoHsz';
+      var APP_KEY = 'vl5Jc0VGv9BdO86OKbxE8Hn4';
+
+      AV.init({
+        appId: APP_ID,
+        appKey: APP_KEY
+      });
+      var query = new AV.Query('dabendan');
+      query.find().then(function(result){
+        for (let index = 0; index < result.length; index++) {
+          let li=document.createElement('li');
+          let img=document.createElement('img');
+          let span=document.createElement('span');
+          let p=document.createElement('p');
+          $(img).attr('src','images/touxiang2.jpeg');
+          // alert(result[index].attributes.name)
+          $(span).text(result[index].attributes.name);
+          $(p).text(result[index].attributes.content);
+          $(li).append(img).append(span).append(p);
+          $('#messageBar ol').append(li);
+        }      
+      })
+
+      //保存留言
+      function saveMessage(){
+        var TestObject = AV.Object.extend('dabendan');
+        var testObject = new TestObject();  
+        let name=$('input[name=name]').val();
+        let content=$('input[name=content]').val();
+        let picture_random=Math.ceil(Math.random()*10);
+        testObject.save({
+          'name': name, 'content': content,
+          'picture':picture_random
+        }).then(function(object) {
+          alert('留言成功！');
+          let li=document.createElement('li');
+          let img=document.createElement('img');
+          let span=document.createElement('span');
+          let p=document.createElement('p');
+          $(img).attr('src','images/touxiang2.jpeg');
+          $(span).text(name);
+          $(p).text(content);
+          $(li).append(img).append(span).append(p);
+          $('#messageBar ol').append(li);
+        })
+      }
+      
+      $('#postMessageForm').submit(function(e){
+        e.preventDefault();
+        saveMessage();
+      })
+        // testObject.save({
+        //   name: 'Hello World!',
+        //   picture:'3',
+        //   word:'jiayoua'
+        // }).then(function(object) {
+        //   alert(1);
+          
+        // },function(e){
+        //   console.log(e);
+        // })
+      
+
+      var mySwiper = new Swiper ('.swiper-container', {
+        // Optional parameters
+        direction: 'horizontal',
+        loop: true,
+
+        // If we need pagination
+        pagination: {
+          el: '.swiper-pagination',
+        },
+
+        // Navigation arrows
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        }
+      })
+
+      $('[data-part]').addClass('offset');
+      initRsume();
 
       window.onscroll =function(e){
         if(window.scrollY > 0){
@@ -242,7 +339,47 @@
         }else{
           topNavBar.classList.remove('sticky')
         }
+        initRsume();
       }
+
+      function initRsume(){
+        let minIndex=0;
+        for (let i = 1; i < $('[data-part]').length; i++) {
+          let element = $('[data-part]')[i];
+          let currentY=window.scrollY;
+          if(Math.abs($(element).offset().top-currentY)<Math.abs($($('[data-part]')[minIndex]).offset().top-currentY)){
+            minIndex=i; 
+          }
+        }
+        $('nav li').removeClass('highlight');
+        $('[data-part]').eq(minIndex).removeClass('offset');
+        $('[href="#'+$('[data-part]')[minIndex].id+'"]').parent().addClass('highlight');
+      }
+
+      // Setup the animation loop.
+      function animate(time) {
+          requestAnimationFrame(animate);
+          TWEEN.update(time);
+      }
+      requestAnimationFrame(animate);
+
+      //点击导航栏缓动
+      $('nav a').click(function(e){
+        e.preventDefault();
+        var targetTop=$(e.currentTarget.getAttribute('href')).offset().top-80;
+        var currentTop=window.scrollY;
+        var coords = { y: currentTop }; 
+        var s=Math.abs(targetTop-currentTop);
+        var t=s/100*300;
+        if(t>500){ t = 500 }
+        var tween = new TWEEN.Tween(coords) 
+                .to({ y: targetTop }, t) 
+                .easing(TWEEN.Easing.Quadratic.Out) 
+                .onUpdate(function() { 
+                    window.scrollTo(0,coords.y)
+                })
+                .start();
+      });
 
       let liTags=document.querySelectorAll('.topNavBar>.topNavBar-inner>nav>ul>li');
       for (let index = 0; index < liTags.length; index++) {
@@ -257,17 +394,17 @@
         }
       }
 
-      let aTags=document.querySelectorAll('.topNavBar>.topNavBar-inner>nav>ul>li>a');
-      for (let j = 0; j < aTags.length; j++) {
-        var element = aTags[j];
-        element.onclick=function(e){
-          e.preventDefault();
-          let a = e.currentTarget
-          let href = a.getAttribute('href')
-          var xxx=document.querySelector(href).offsetTop;
-          window.scrollTo(0, xxx - 80)
-        }
-      }
+      // let aTags=document.querySelectorAll('.topNavBar>.topNavBar-inner>nav>ul>li>a');
+      // for (let j = 0; j < aTags.length; j++) {
+      //   var element = aTags[j];
+      //   element.onclick=function(e){
+      //     e.preventDefault();
+      //     let a = e.currentTarget
+      //     let href = a.getAttribute('href')
+      //     var xxx=document.querySelector(href).offsetTop;
+      //     window.scrollTo(0, xxx - 80)
+      //   }
+      // }
     </script>
   </body>
 </html>
