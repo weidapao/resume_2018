@@ -280,6 +280,9 @@
         let name=$('input[name=name]').val();
         let content=$('input[name=content]').val();
         let picture_random=Math.ceil(Math.random()*10);
+        if(content===''||name===''){  //空评论不能提交
+          return;
+        }
         testObject.save({
           'name': name, 'content': content,
           'picture':picture_random
